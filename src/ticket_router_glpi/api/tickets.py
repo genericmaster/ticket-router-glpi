@@ -6,11 +6,9 @@ ticket_router = APIRouter()
 
 def process_ticket(body: dict):
     try:
-        print("process_ticket started", body)
         ticket_id = body["item"]["id"]
         print("calling route")
         group_id = route(data=body)
-        print("route returned", group_id)
         update(ticket_id=ticket_id, group_id=group_id)
         print("update done")
     except Exception as e:

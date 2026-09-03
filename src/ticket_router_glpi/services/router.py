@@ -27,7 +27,6 @@ def route(data):
                              -Where <id> is the integer ID of the group. No explanation, no extra text, nothing outside the JSON object."""
                              
     system_prompt = base_system_prompt + "\n" +config.system_prompt
-    print("calling LLM with", config.base_url, config.model_name)
     response = call_llm(model_name=config.model_name,system_prompt=system_prompt,prompt=cleaned_content,model_url=config.base_url)
     return response
                                       
@@ -59,7 +58,7 @@ def get_session_token():
                 "App-Token": APP_TOKEN
             }
         )
-        print(response.json()["session_token"]) 
+     
         return response.json()["session_token"]   
         
     
