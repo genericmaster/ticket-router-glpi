@@ -1,0 +1,24 @@
+[project]
+name = "ticket-router-glpi"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "genericmaster", email = "rakhivhanithendo@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "aiofiles>=25.1.0",
+    "httpx>=0.28.1",
+    "ollama>=0.6.2",
+    "python-dotenv>=1.2.3",
+    "sqlalchemy>=2.0.52",
+    "uvicorn>=0.52.4",
+]
+
+[project.scripts]
+ticket-router-glpi = "ticket_router_glpi:main"
+
+[build-system]
+requires = ["uv_build>=0.12.2,<0.13.0"]
+build-backend = "uv_build"

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ticket Router</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+ <link rel="stylesheet" href="/frontend/router_dashboard.css" />
+</head>
+<body>
+
+  <!-- Setup Wizard Overlay -->
+  <div id="wizard-overlay" class="wizard-overlay hidden">
+    <div class="wizard-card">
+      <div class="wizard-header">
+        <span class="wizard-step-label">First-time setup</span>
+        <h1 class="wizard-title">Add routing groups</h1>
+        <p class="wizard-desc">Define the groups tickets can be routed to. You need at least one before the router can process tickets.</p>
+      </div>
+
+      <div id="wizard-groups-list" class="wizard-groups-list"></div>
+
+      <button class="btn-ghost" id="wizard-add-row">+ Add group</button>
+
+      <div class="wizard-footer">
+        <button class="btn-primary" id="wizard-submit">Save groups and continue</button>
+      </div>
+
+      <p id="wizard-error" class="form-error hidden"></p>
+    </div>
+  </div>
+
+  <!-- Main App -->
+  <div id="app" class="app hidden">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <span class="brand-dot"></span>
+        <span class="brand-name">Ticket Router</span>
+      </div>
+      <nav class="sidebar-nav">
+        <button class="nav-item active" data-tab="model">Model</button>
+        <button class="nav-item" data-tab="groups">Routing Groups</button>
+      </nav>
+      <div class="sidebar-status">
+        <span class="status-dot" id="status-dot"></span>
+        <span class="status-label" id="status-label">Checking...</span>
+      </div>
+    </aside>
+
+    <!-- Content -->
+    <main class="content">
+
+      <!-- Model Tab -->
+      <section class="tab-panel active" id="tab-model">
+        <div class="panel-header">
+          <h2 class="panel-title">Model configuration</h2>
+          <p class="panel-sub">Controls which model processes incoming tickets.</p>
+        </div>
+
+        <form class="config-form" id="llm-form">
+          <div class="field-group">
+            <label class="field-label" for="provider-select">Provider</label>
+            <select class="field-input" id="provider-select" name="provider">
+              <option value="">Select provider</option>
+              <option value="Ollama">Ollama — localhost:11434</option>
+              <option value="LM Studio">LM Studio — localhost:1234</option>
+              <option value="vLLM">vLLM — localhost:8000</option>
+              <option value="llama.cpp">llama.cpp — localhost:8080</option>
+            </select>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="model-name">Model name</label>
+            <input class="field-input" type="text" id="model-name" name="model_name" placeholder="e.g. qwen3.5:9b" />
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="system-prompt">System prompt</label>
+            <p class="field-hint">Additional routing context appended to the base prompt. Leave empty to use defaults only.</p>
+            <textarea class="field-input field-textarea" id="system-prompt" name="system_prompt" rows="6" placeholder="e.g. Prioritise HPC tickets from staff with active projects..."></textarea>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn-primary" id="llm-save-btn">Save changes</button>
+            <span class="save-feedback hidden" id="llm-feedback"></span>
+          </div>
+        </form>
+      </section>
+
+      <!-- Groups Tab -->
+      <section class="tab-panel" id="tab-groups">
+        <div class="panel-header">
+          <h2 class="panel-title">Routing groups</h2>
+          <p class="panel-sub">Tickets are assigned to one of these GLPI groups by the model.</p>
+        </div>
+
+        <div id="groups-table-wrap">
+          <table class="groups-table">
+            <thead>
+              <tr>
+                <th>Group name</th>
+                <th>GLPI group ID</th>
+              </tr>
+            </thead>
+            <tbody id="groups-tbody"></tbody>
+          </table>
+        </div>
+
+        <div class="groups-add-section">
+          <h3 class="add-section-title">Add groups</h3>
+          <div id="new-groups-list" class="wizard-groups-list"></div>
+          <button class="btn-ghost" id="groups-add-row">+ Add group</button>
+          <div class="form-actions">
+            <button class="btn-primary" id="groups-save-btn">Save groups</button>
+            <span class="save-feedback hidden" id="groups-feedback"></span>
+          </div>
+          <p id="groups-error" class="form-error hidden"></p>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="/frontend/router_dashboard.js"></script>
+</body>
+</html>
