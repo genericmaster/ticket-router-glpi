@@ -12,7 +12,7 @@ class RoutingGroupCreate(BaseModel):
 class RouterConfig(BaseModel):
     groups: list[RoutingGroupCreate]
     
-class LllmConfiguration(BaseModel):
+class LlmConfiguration(BaseModel):
     model_name: str
     provider: str
     system_prompt: str
@@ -51,7 +51,7 @@ def get_routing_groups()->list:
             return groups_dict
                        
 @config_router.put("/llm")
-def update_llm_config(data:LllmConfiguration):
+def update_llm_config(data:LlmConfiguration):
     with SessionFactory() as session:
         update_config = session.query(Llmconfig).first()
         update_config.model_name = data.model_name

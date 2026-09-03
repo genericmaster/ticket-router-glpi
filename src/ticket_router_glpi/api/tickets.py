@@ -9,6 +9,7 @@ def process_ticket(body: dict):
         ticket_id = body["item"]["id"]
         print("calling route")
         group_id = route(data=body)
+        print("RAW RESPONSE:", repr(group_id))
         update(ticket_id=ticket_id, group_id=group_id)
         print("update done")
     except Exception as e:
@@ -22,7 +23,9 @@ async def add_to_queue(data: Request):
 
 def worker():
     while True:
+        print("worker called")
         body =q.get()
+        print("GOT FROM QUEUE:", body)
         process_ticket(body)
         q.task_done()
 

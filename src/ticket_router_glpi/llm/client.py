@@ -4,7 +4,7 @@ def call_llm(model_name:str,system_prompt:str,prompt:str,model_url:str)->str:
    """creates an api connction with modelprovider using  model provider url and actual ticket and system propt conntent and gets back json response"""
    content= {
     "model": model_name,
-    "think": False,
+    "reasoning_effort": "none",
     "messages": [
         {"role": "system", "content": system_prompt},
         {"role": "user", "content":prompt}

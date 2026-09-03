@@ -27,6 +27,8 @@ def route(data):
                              -Where <id> is the integer ID of the group. No explanation, no extra text, nothing outside the JSON object."""
                              
     system_prompt = base_system_prompt + "\n" +config.system_prompt
+    print("GROUPS:", glpi_groups_info)
+    print("SYSTEM PROMPT:", system_prompt)
     response = call_llm(model_name=config.model_name,system_prompt=system_prompt,prompt=cleaned_content,model_url=config.base_url)
     return response
                                       
@@ -36,17 +38,20 @@ def update(ticket_id:int,group_id:str):
     body = json.loads(group_id)
     session_token = get_session_token()
     
-    
-    response = httpx.patch(
-            f"{GLPI_BASE}/Ticket/{ticket_id}",
-            headers={
-                "Session-Token": session_token,
-                "App-Token": APP_TOKEN,
-                "Content-Type": "application/json"
-            },
-            json={"input": body}
-        )
-    return {"200":"ok"}
+    try:
+        response=httpx.patch(
+                f"{GLPI_BASE}/Ticket/{ticket_id}",
+                headers={
+                    "Session-Token": session_token,
+                    "App-Token": APP_TOKEN,
+                    "Content-Type": "application/json"
+                },
+                json={"input": body}
+            )
+        return response.raise_for_status()
+                    
+    except Exception as e:
+       raise RuntimeError(f"update failed : {e}")
             
                 
 def get_session_token():
