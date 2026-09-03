@@ -1,6 +1,6 @@
-from httpx import AsyncClient
+import httpx
 
-async def call_llm(model_name:str,system_prompt:str,prompt:str,model_url:str)->str:
+def call_llm(model_name:str,system_prompt:str,prompt:str,model_url:str)->str:
    """creates an api connction with modelprovider using  model provider url and actual ticket and system propt conntent and gets back json response"""
    content= {
     "model": model_name,
@@ -10,6 +10,6 @@ async def call_llm(model_name:str,system_prompt:str,prompt:str,model_url:str)->s
         {"role": "user", "content":prompt}
       ]
      }
-   async with AsyncClient(timeout=180.0) as client:
-      response = await client.post(model_url,json=content)
+   
+   response = httpx.post(model_url,json=content,timeout=180.0)
    return response.json()["choices"][0]["message"]["content"]

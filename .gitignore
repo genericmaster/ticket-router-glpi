@@ -10,3 +10,4 @@ wheels/
 .venv
 .env
 src/ticket_router_glpi/learning_scripts/
+data/

@@ -1,6 +1,6 @@
 import os
 from dotenv import load_dotenv
-from httpx import AsyncClient
+import httpx
 import json
 from  src.ticket_router_glpi.utils.cleaning import clean
 from src.ticket_router_glpi.llm.client import  call_llm
@@ -13,7 +13,7 @@ USER_TOKEN = os.getenv("USER_TOKEN")
 GLPI_BASE = os.getenv("GLPI_BASE")
 
 
-async def route(data):
+def route(data):
     content =data["item"]["content"]
     cleaned_content=clean(content=content)
     with SessionFactory() as session:
@@ -28,17 +28,17 @@ async def route(data):
                              
     system_prompt = base_system_prompt + "\n" +config.system_prompt
     print("calling LLM with", config.base_url, config.model_name)
-    response = await call_llm(model_name=config.model_name,system_prompt=system_prompt,prompt=cleaned_content,model_url=config.base_url)
+    response = call_llm(model_name=config.model_name,system_prompt=system_prompt,prompt=cleaned_content,model_url=config.base_url)
     return response
                                       
                                       
         
-async def update(ticket_id:int,group_id:str):
+def update(ticket_id:int,group_id:str):
     body = json.loads(group_id)
-    session_token = await get_session_token()
+    session_token = get_session_token()
     
-    async with AsyncClient() as client:
-        response = await client.patch(
+    
+    response = httpx.patch(
             f"{GLPI_BASE}/Ticket/{ticket_id}",
             headers={
                 "Session-Token": session_token,
@@ -47,12 +47,12 @@ async def update(ticket_id:int,group_id:str):
             },
             json={"input": body}
         )
-        return {"200":"ok"}
+    return {"200":"ok"}
             
                 
-async def get_session_token():
-    async with AsyncClient() as client:
-        response = await client.get(
+def get_session_token():
+    
+        response = httpx.get(
             f"{GLPI_BASE}/initSession",
             headers={
                 "Authorization": f"user_token {USER_TOKEN}",
